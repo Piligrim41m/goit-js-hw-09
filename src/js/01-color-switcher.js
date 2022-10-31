@@ -10,6 +10,10 @@ const selector = {
       if (this.isActive) {
         return;
       }
+    
+    btnStart.disabled = true;
+    btnStop.disabled = false;
+
       this.isActive = true;     
       this.intervalId = setInterval(() => {
         bodyRef.style.backgroundColor = getRandomHexColor();
@@ -19,6 +23,9 @@ const selector = {
     },
    
   stop() {
+     btnStart.disabled = false;
+    btnStop.disabled = true;
+
      clearInterval(this.intervalId)
     this.isActive = false;
     console.log('stop')
