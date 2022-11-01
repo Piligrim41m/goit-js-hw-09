@@ -23,6 +23,7 @@ function onSubmitForm(event) {
       });
     delay += step
   }
+  form.reset()
 }
 
 function createPromise(position, delay) {

@@ -19,6 +19,9 @@ const dataSeconds = document.querySelector('span[data-seconds]')
 
 let btnActive = false
 let ms = 0
+let selectedTime = null
+let timerID = null
+btnStart.disabled = true
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0')
@@ -47,14 +50,17 @@ function convertMs(ms) {
 const options = {
   enableTime: true,
   time_24hr: true,
-  defaultDate: new Date(),
+  defaultDate: Date.now(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    let nowDate = new Date()
-    if (selectedDates[0] < nowDate) {
-      return alert("Please choose a date in the future")
+    // let nowDate = new Date()
+    if (selectedDates[0] < Date.now()) {
+      console.log(alert("Please choose a date in the future"))
+      selectedDates[0] = new Date();
     }
-    btnStart.addEventListener('click', onClickStart)
+    btnStart.disabled = false
+    selectedTime = selectedDates[0]
+    
   }
 }
 const fp = flatpickr("#datetime-picker", options)
@@ -65,17 +71,25 @@ function onClickStart() {
   }
   btnActive = true;
   console.log('start')
-  setInterval(() => {
-    let nowDate = new Date()
-    ms = fp.selectedDates[0] - nowDate;
+  timerID = setInterval(() => {
+    const nowDate = Date.now()
+    ms = selectedTime - nowDate;
+    if (ms <= 0) {
+     return  stopTimer()
+  }
     const timeElements = convertMs(ms)
     console.log('my object ->', timeElements)
-    console.log(timeElements.days)
     dataDays.textContent = timeElements.days
     dataHours.textContent = timeElements.hours
     dataMinutes.textContent = timeElements.minutes
     dataSeconds.textContent = timeElements.seconds
+    
   }, 1000)
+  
 }
 
+function stopTimer() {
+  clearInterval(timerID);
+}
 
+btnStart.addEventListener('click', onClickStart)
